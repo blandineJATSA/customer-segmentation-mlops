@@ -1,0 +1,52 @@
+# === CONFIGURATION PRINCIPALE ===
+project:
+  name: "customer-segmentation-mlops"
+  version: "1.0.0"
+  description: "Customer Segmentation MLOps Platform"
+  
+# === MLFLOW CONFIGURATION ===
+mlflow:
+  tracking_uri: "http://localhost:5000"
+  experiment_name: "customer-segmentation"
+  model_registry_name: "customer-segmentation-model"
+  artifact_location: "./mlruns"
+
+# === DATA CONFIGURATION ===
+data:
+  raw_data_path: "data/raw"
+  processed_data_path: "data/processed"
+  external_data_path: "data/external"
+  train_test_split: 0.8
+  random_state: 42
+  
+# === MODEL CONFIGURATION ===
+model:
+  algorithms:
+    - "kmeans"
+    - "hierarchical" 
+    - "gaussian_mixture"
+  n_clusters_range: [3, 4, 5, 6, 7, 8]
+  evaluation_metrics:
+    - "silhouette_score"
+    - "calinski_harabasz_score"
+    - "davies_bouldin_score"
+
+# === API CONFIGURATION ===
+api:
+  host: "0.0.0.0"
+  port: 8000
+  reload: true
+  log_level: "info"
+  
+# === MONITORING CONFIGURATION ===
+monitoring:
+  data_drift_threshold: 0.3
+  performance_threshold: 0.85
+  alert_email: "admin@company.com"
+  check_frequency_hours: 24
+
+# === LOGGING CONFIGURATION ===
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_path: "logs/application.log"

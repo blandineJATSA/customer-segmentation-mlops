@@ -1,0 +1,67 @@
+# === CONFIGURATION MODÈLES ML ===
+
+# === RFM ANALYSIS ===
+rfm:
+  recency_bins: [30, 90, 180, 365]  # jours
+  frequency_bins: [1, 2, 5, 10]     # nombre commandes
+  monetary_bins: [50, 200, 500, 1000]  # euros
+  
+# === FEATURE ENGINEERING ===
+features:
+  temporal_features:
+    - "days_since_last_purchase"
+    - "purchase_frequency"
+    - "seasonal_patterns"
+    - "weekday_preferences"
+  
+  behavioral_features:
+    - "avg_order_value"
+    - "total_spent"
+    - "product_diversity"
+    - "return_rate"
+  
+  aggregation_periods:
+    - 30   # derniers 30 jours
+    - 90   # derniers 90 jours  
+    - 365  # dernière année
+
+# === ALGORITHMES CLUSTERING ===
+algorithms:
+  kmeans:
+    n_clusters: [3, 4, 5, 6, 7]
+    init: "k-means++"
+    n_init: 10
+    max_iter: 300
+    random_state: 42
+    
+  hierarchical:
+    n_clusters: [3, 4, 5, 6, 7]
+    linkage: "ward"
+    affinity: "euclidean"
+    
+  gaussian_mixture:
+    n_components: [3, 4, 5, 6, 7]
+    covariance_type: "full"
+    init_params: "kmeans"
+    max_iter: 100
+    random_state: 42
+
+# === HYPERPARAMETER TUNING ===
+hyperopt:
+  n_trials: 50
+  optimization_metric: "silhouette_score"
+  direction: "maximize"
+  
+# === VALIDATION ===
+validation:
+  cross_validation_folds: 5
+  metrics:
+    primary: "silhouette_score"
+    secondary: 
+      - "calinski_harabasz_score"
+      - "davies_bouldin_score"
+      - "inertia"
+  
+  thresholds:
+    min_silhouette_score: 0.3
+    min_cluster_size: 50  # minimum clients par cluster

@@ -1,0 +1,68 @@
+# === CONFIGURATION DONNÉES ===
+
+# === DATA SOURCES ===
+sources:
+  raw_data: "data/raw/online_retail_II.csv"
+  transactions: "data/raw/transactions.csv"
+  customers: "data/raw/customers.csv"
+  products: "data/raw/products.csv"
+  external_data: "data/external/"
+
+# === DATA QUALITY ===
+quality_checks:
+  missing_values_threshold: 0.05  # 5% max de valeurs manquantes
+  duplicate_threshold: 0.01       # 1% max de doublons
+  outlier_detection_method: "iqr" # ou "zscore"
+  outlier_threshold: 3.0
+  
+# === PREPROCESSING ===
+preprocessing:
+  date_format: "%Y-%m-%d"
+  currency_columns: ["amount", "total_spent"]
+  categorical_encoding: "onehot"  # ou "label", "target"
+  numerical_scaling: "standard"   # ou "minmax", "robust"
+  
+  handling_missing:
+    numerical: "median"    # "mean", "median", "mode", "drop"
+    categorical: "mode"    # "mode", "unknown", "drop"
+    
+# === FEATURE ENGINEERING ===
+feature_engineering:
+  create_rfm: true
+  create_temporal_features: true
+  create_behavioral_features: true
+  create_interaction_features: false
+  
+  temporal_windows:
+    - 7    # dernière semaine
+    - 30   # dernier mois
+    - 90   # dernier trimestre
+    - 365  # dernière année
+    
+# === DATA VALIDATION RULES ===
+validation_rules:
+  customer_id:
+    - "not_null"
+    - "unique"
+    - "format: string"
+    
+  transaction_date:
+    - "not_null" 
+    - "date_format: %Y-%m-%d"
+    - "range: 2020-01-01 to today"
+    
+  amount:
+    - "not_null"
+    - "positive"
+    - "range: 0.01 to 10000"
+    
+  quantity:
+    - "not_null"
+    - "positive_integer"
+    - "range: 1 to 100"
+
+# === OUTPUT CONFIGURATION ===
+output:
+  processed_data_filename: "processed_customer_data.csv"
+  feature_store_filename: "feature_store.pkl"
+  data_quality_report: "data_quality_report.html"
